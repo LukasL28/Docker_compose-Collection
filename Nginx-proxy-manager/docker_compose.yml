@@ -39,3 +39,8 @@ networks: #custom network where all containers using npm
   proxy_bridge:
     external:
       name: proxy_bridge
+    imp:
+      driver: default
+      config:
+        - subnet: 172.25.0.0/16  #change if this subnet is already in use
+          gateway: 172.25.0.1
