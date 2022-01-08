@@ -1,5 +1,7 @@
 version: '3'
 
+#Compose preset by LukasL28 https://github.com/LukasL28
+#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
 
 services:
   app:
