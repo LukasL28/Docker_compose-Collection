@@ -1,0 +1,62 @@
+version: '2'
+
+#Compose preset by LukasL28 https://github.com/LukasL28
+#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
+
+services:
+  db:
+    image: mariadb:latest
+    restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW --innodb-read-only-compressed=OFF
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=CHANGEME #Change bevore use!!
+      - MYSQL_PASSWORD=CHANGEME #Change bevore use!! 
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+    networks:
+      default:
+
+  app:
+    image: nextcloud:latest
+    restart: always
+    links:
+      - db
+    volumes:
+      - data:/var/www/html
+    #ports:    #when you don't use the NGINX-Proxy-Manger preset 
+    #  - 8080:80
+    environment:
+      - MYSQL_PASSWORD=CHANGEME #Hase to be the same as "MYSQL_PASSWORD" in service "db"
+      - MYSQL_DATABASE=nextcloud
+      - MYSQL_USER=nextcloud
+      - MYSQL_HOST=db
+      - TRUSTED_PROXIES=172.17.0.1
+      - OVERWRITEPROTOCOL=https
+      - enable_previews=true
+    networks:
+      default:
+      proxy_bridge:
+        ipv4_address: 172.25.0.4  #change if already in use
+        
+  cron:
+    image: rcdailey/nextcloud-cronjob:latest  
+    restart: always
+    depends_on:
+    - app
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /etc/localtime:/etc/localtime:ro
+    environment:
+    - NEXTCLOUD_CONTAINER_NAME=app
+    - NEXTCLOUD_PROJECT_NAME=Nextcloud  #change to stack name!!
+    - NEXTCLOUD_CRON_MINUTE_INTERVAL=1
+    networks:
+      default:
+    
+networks:
+  default:
+  proxy_bridge:
+    external:
+      name: proxy_bridge #if you use the Nginx-proxy-manager Preset "https://github.com/LukasL28/Docker_compose-Collection/tree/main/Nginx-proxy-manager" 
