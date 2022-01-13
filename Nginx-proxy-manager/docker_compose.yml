@@ -25,7 +25,7 @@ services:
     volumes:
      - 404_page:/usr/share/nginx/html:ro
     environment:
-     - NGINX_HOST=404.youdomain.example  #!! Change to your domain !!
+     - NGINX_HOST=404.landderautisten.de  #!! Change to your domain !!
     networks:
       proxy_bridge:
         ipv4_address: 172.25.0.3  #static ip vor 404 Page
@@ -37,9 +37,8 @@ volumes:
   
 networks: #custom network where all containers using npm
   proxy_bridge:
-    external:
-      name: proxy_bridge
-    imp:
+    name: proxy_bridge
+    ipam:
       driver: default
       config:
         - subnet: 172.25.0.0/16  #change if this subnet is already in use
