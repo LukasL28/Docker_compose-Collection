@@ -60,3 +60,7 @@ networks:
   proxy_bridge:
     external:
       name: proxy_bridge #if you use the Nginx-proxy-manager Preset "https://github.com/LukasL28/Docker_compose-Collection/tree/main/Nginx-proxy-manager" 
+      
+volumes:
+  db:
+  data:
