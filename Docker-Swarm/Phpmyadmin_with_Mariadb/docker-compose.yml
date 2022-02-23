@@ -1,0 +1,71 @@
+#------------------------------------------------------------------------------------
+#Compose preset by LukasL28 https://github.com/LukasL28
+#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
+#------------------------------------------------------------------------------------
+
+version: '3'
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    environment:
+      PMA_HOST: db1 # This can only be used if you have one database! If you have multiple databases use PMA_HOSTS and delete this line!
+      #PMA_HOSTS: db1,db2 # if you have multiple Databases you have to make a comma separated list: (eg: db1,db2,db3)
+      MYSQL_ROOT_PASSWORD: CHANGEME
+      PMA_ABSOLUTE_URI: https://your.domain.example/
+    networks:
+      default:
+      traefik-public:  # Remove this if you don't use traefik
+    deploy:
+      mode: replicated 
+      replicas: 1
+      labels:
+        - traefik.enable=true # Remove this if you don't use traefik
+        - traefik.docker.network=traefik-public # Change this if your traefik network is different!
+        # Change every position marked with "CHANGEME" to the service name (eg. Homepage) they all have to be named the same! 
+        # Change you "you.domain.example" to match your domain
+        - traefik.http.routers.CHANGEME-http.rule=Host(`your.domain.example`)
+        - traefik.http.routers.CHANGEME-http.entrypoints=http
+        - traefik.http.routers.CHANGEME-http.middlewares=https-redirect
+        - traefik.http.routers.CHANGEME-https.rule=Host(`your.domain.example`)
+        - traefik.http.routers.CHANGEME-https.entrypoints=https
+        - traefik.http.routers.CHANGEME-https.tls=true
+        - traefik.http.routers.CHANGEME-https.tls.certresolver=le
+        - traefik.http.services.CHANGEME.loadbalancer.server.port=80
+
+  db1:
+    image: mariadb:latest
+    volumes:
+      - db1_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: CHANGEME #This is the root password of the db! It should be different for ever db!
+    networks:
+      default:
+    deploy:
+      mode: replicated 
+      replicas: 1
+
+  # # Just copy this if you want multiple databases! Make sure to change the service name (here: db2) and the mounted volume (here: db2_data)
+  # db2:
+  #   image: mariadb:latest
+  #   volumes:
+  #     - db2_data:/var/lib/mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: CHANGEME #This is the root password of the db! It should be different for ever db!
+  #   networks:
+  #     default:
+  #   deploy:
+  #     mode: replicated 
+  #     replicas: 1
+
+networks:
+  default:
+  traefik-public:  # Remove this if you don't use traefik
+    external: true
+
+volumes:
+  db1_data:
+  # db2_data: #don't forget to add all volumes here!
