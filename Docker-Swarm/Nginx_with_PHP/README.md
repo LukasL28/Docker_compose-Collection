@@ -4,5 +4,6 @@ This is a docker-compose preset for a [Nginx](https://www.nginx.com/) Webserver 
 
 <h2>Make sure you change linke 30-37!!</h2>
 
+Put the "default.conf" in the docker volume named nginx.conf
 ------------------------------------------------
 Preset by [@LukasL28](https://github.com/LukasL28)
