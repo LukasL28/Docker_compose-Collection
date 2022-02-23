@@ -1,0 +1,56 @@
+#------------------------------------------------------------------------------------
+#Compose preset by LukasL28 https://github.com/LukasL28
+#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
+#------------------------------------------------------------------------------------
+
+version: '3.2'
+
+services:
+  nginx:
+    image: nginx:latest
+    networks:
+      traefik-public: # Traefik network! If you named it differently, substitute it here and below. Remove this if you don't use traefik
+      default:
+    restart: always
+    volumes:
+      - page:/var/www/html
+      - nginx.conf:/etc/nginx/conf.d/
+    links:
+      - php
+    depends_on:
+      - php
+    deploy:
+      mode: replicated 
+      replicas: 1
+      labels:
+        - traefik.enable=true # Remove this if you don't use traefik
+        - traefik.docker.network=traefik-public # Change this if your traefik network is different!
+        # Change every position marked with "CHANGEME" to the service name (eg. Homepage) they all have to be named the same! 
+        # Change you "you.domain.example" to match your domain
+        - traefik.http.routers.CHANGEME-http.rule=Host(`your.domain.example`)
+        - traefik.http.routers.CHANGEME-http.entrypoints=http
+        - traefik.http.routers.CHANGEME-http.middlewares=https-redirect
+        - traefik.http.routers.CHANGEME-https.rule=Host(`your.domain.example`)
+        - traefik.http.routers.CHANGEME-https.entrypoints=https
+        - traefik.http.routers.CHANGEME-https.tls=true
+        - traefik.http.routers.CHANGEME-https.tls.certresolver=le
+        - traefik.http.services.CHANGEME.loadbalancer.server.port=80
+
+  php: # Careful if you change this you have to change it in the "default.conf" too!
+    image: php:8-fpm #you can change your php version here!
+    volumes:
+      - page:/var/www/html
+    networks:
+        default:
+    deploy:
+      mode: replicated 
+      replicas: 1
+
+networks:
+  default:
+  traefik-public: # Remove this if you don't use traefik
+    external: true
+
+volumes:
+  page:
+  nginx.conf: #Put the "default.conf" here!
