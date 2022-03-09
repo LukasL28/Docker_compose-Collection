@@ -1,0 +1,35 @@
+#------------------------------------------------------------------------------------
+#Compose preset by LukasL28 https://github.com/LukasL28
+#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
+#------------------------------------------------------------------------------------
+
+version: '3.2'
+
+services:
+  app:
+    image: louislam/uptime-kuma:latest
+    restart: always
+    volumes:
+      - data:/app/data
+    # networks:
+      # traefik-public: # if you use traefik
+    deploy:
+      mode: replicated 
+      replicas: 1
+      # labels: # if you use traefik
+      #   - traefik.enable=true
+      #   - traefik.http.routers.uptimekuma-http.rule=Host(`up.example.com`)
+      #   - traefik.http.routers.uptimekuma-http.entrypoints=http
+      #   - traefik.http.routers.uptimekuma-http.middlewares=https-redirect
+      #   - traefik.http.routers.uptimekuma-https.rule=Host(`up.example.com`)
+      #   - traefik.http.routers.uptimekuma-https.entrypoints=https
+      #   - traefik.http.routers.uptimekuma-https.tls=true
+      #   - traefik.http.routers.uptimekuma-https.tls.certresolver=le
+      #   - traefik.http.services.uptimekuma.loadbalancer.server.port=3001
+      
+volumes:
+  data:
+  
+# networks:
+  # traefik-public: if you use traefik
+  #   external: true
