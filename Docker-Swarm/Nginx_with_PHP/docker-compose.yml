@@ -16,9 +16,9 @@ services:
       - page:/var/www/html
       - nginx.conf:/etc/nginx/conf.d/
     links:
-      - php
+      - php-fpm
     depends_on:
-      - php
+      - php-fpm
     deploy:
       mode: replicated 
       replicas: 1
@@ -36,7 +36,7 @@ services:
         - traefik.http.routers.CHANGEME-https.tls.certresolver=le
         - traefik.http.services.CHANGEME.loadbalancer.server.port=80
 
-  php: # Careful if you change this you have to change it in the "default.conf" too!
+  php-fpm: # Careful if you change this you have to change it in the "default.conf" too!
     image: php:8-fpm #you can change your php version here!
     volumes:
       - page:/var/www/html
