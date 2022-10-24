@@ -1,0 +1,17 @@
+version: '3'
+
+#Compose preset by LukasL28 https://github.com/LukasL28
+
+services:
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    # environment:
+      # PMA_HOST: #list host of mysql server here
+    networks:
+      proxy_bridge:
+      
+ 
+networks:
+  proxy_bridge:
+    external: true
