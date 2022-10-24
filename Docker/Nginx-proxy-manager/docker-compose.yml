@@ -1,37 +1,33 @@
 version: '3'
 
 #Compose preset by LukasL28 https://github.com/LukasL28
-#More preset's here: https://github.com/LukasL28/Docker_compose-Collection
 
 services:
-  app:
-    image: 'jc21/nginx-proxy-manager:latest'   
+  nginx_proxy_manager:
+    image: jc21/nginx-proxy-manager:2.9.18
     restart: always
     ports:
       - '80:80'
       - '81:81'  #Management Webinterface
       - '443:443'
     volumes:
-      - data:/data
+      - npm_data:/data
       - letsencrypt:/etc/letsencrypt
     networks:
       proxy_bridge: #custom network where all containers using npm are beeing maped to 
-        ipv4_address: 172.25.0.2  #static ip vor npm 
+
 
   error_page:  #Nginx Web-Server vor hosting your custom 404 Page
-    image: nginx
+    image: nginx:latest
     depends_on:
-      - app
+      - npm
     volumes:
      - 404_page:/usr/share/nginx/html:ro
-    environment:
-     - NGINX_HOST=404.landderautisten.de  #!! Change to your domain !!
     networks:
       proxy_bridge:
-        ipv4_address: 172.25.0.3  #static ip vor 404 Page
 
 volumes: 
-  data:
+  npm_data:
   letsencrypt:
   404_page: #you index file vor the 404 page goes here
   
