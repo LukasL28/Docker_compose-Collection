@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  db:
+    image: mariadb:latest
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${rootpwdb1}
+    networks:
+      db_1:
+
+ 
+networks:
+  db_1:
+    name: db_1
+    ipam:
+      driver: default
+
+volumes:
+  db_data:
