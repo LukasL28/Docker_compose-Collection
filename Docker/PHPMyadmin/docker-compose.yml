@@ -10,8 +10,10 @@ services:
       # PMA_HOST: #list host of mysql server here
     networks:
       proxy_bridge:
-      
+      # db_1 # list all networks of mysql server here
  
 networks:
   proxy_bridge:
     external: true
+  # db_1: # list all networks of mysql server here
+  #   external: true 
